@@ -54,7 +54,7 @@ public class BoardController extends UiUtils {
 
 		return showMessageWithRedirect("게시글 등록이 완료되었습니다.", "/board/list.do", Method.GET, null, model);
 	}
-	@GetMapping(value = "/board/list.do")
+		@GetMapping(value = "/board/list.do")
 	public String openBoardList(@ModelAttribute("params") BoardDTO params, Model model) {
 		List<BoardDTO> boardList = boardService.getBoardList(params);
 		model.addAttribute("boardList", boardList);
@@ -63,16 +63,14 @@ public class BoardController extends UiUtils {
 	}
 
 	@GetMapping(value = "/board/view.do")
-	public String openBoardDetail(@RequestParam(value = "idx", required = false) Long idx, Model model) {
+	public String openBoardDetail(@ModelAttribute("params") BoardDTO params, @RequestParam(value = "idx", required = false) Long idx, Model model) {
 		if (idx == null) {
-			// TODO => 올바르지 않은 접근이라는 메시지를 전달하고, 게시글 리스트로 리다이렉트
-			return "redirect:/board/list.do";
+			return showMessageWithRedirect("올바르지 않은 접근입니다.", "/board/list.do", Method.GET, null, model);
 		}
 
 		BoardDTO board = boardService.getBoardDetail(idx);
 		if (board == null || "Y".equals(board.getDeleteYn())) {
-			// TODO => 없는 게시글이거나, 이미 삭제된 게시글이라는 메시지를 전달하고, 게시글 리스트로 리다이렉트
-			return "redirect:/board/list.do";
+			return showMessageWithRedirect("없는 게시글이거나 이미 삭제된 게시글입니다.", "/board/list.do", Method.GET, null, model);
 		}
 		model.addAttribute("board", board);
 
